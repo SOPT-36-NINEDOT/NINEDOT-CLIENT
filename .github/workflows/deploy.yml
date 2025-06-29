@@ -29,16 +29,13 @@ jobs:
       - name: Build project
         run: pnpm build
 
-      - name: Create output
-        run: sh ./build.sh
-
       - name: Push to fork repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
         with:
-          source-directory: 'output'
+          source-directory: '.'
           destination-github-username: shinjigu
           destination-repository-name: NINEDOT-CLIENT
           user-email: ${{ secrets.EMAIL }}
