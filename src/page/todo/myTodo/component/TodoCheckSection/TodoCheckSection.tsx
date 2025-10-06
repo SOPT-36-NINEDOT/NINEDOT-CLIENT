@@ -22,6 +22,7 @@ interface TodoCheckSectionProps {
   onTodoClick: (item: TodoItemTypes) => void;
   onMandalartClick: (parentId: number | undefined) => void;
   selectedParentId: number | undefined;
+  currentDate?: Date;
 }
 
 const CYCLE_LIST: CycleType[] = ['DAILY', 'WEEKLY', 'ONCE'];
@@ -38,6 +39,7 @@ const TodoCheckSection = ({
   onTodoClick,
   onMandalartClick,
   selectedParentId,
+  currentDate,
 }: TodoCheckSectionProps) => {
   const mandalartId = useMandalartId();
   const { data: coreGoalsData } = useGetMandalCoreGoals(mandalartId);
@@ -45,7 +47,12 @@ const TodoCheckSection = ({
     data: subGoalResponse,
     isLoading: isSubGoalsLoading,
     isFetching: isSubGoalsFetching,
-  } = useGetMandalartSubGoals(mandalartId, selectedParentId, selectedCycle);
+  } = useGetMandalartSubGoals(
+    mandalartId,
+    selectedParentId,
+    selectedCycle,
+    currentDate ? currentDate.toISOString().split('T')[0] : undefined,
+  );
 
   const [localSubGoals, setLocalSubGoals] = useState<TodoItemTypes[]>([]);
 
