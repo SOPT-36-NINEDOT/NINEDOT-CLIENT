@@ -34,7 +34,6 @@ const MyTodo = ({
     handleDateChange,
     handleCycleClick,
     handleRecommendTodoClick,
-    handleMyTodoClick,
   } = useMyTodo({
     initialDate: selectedDate,
     initialRecommendTodos,
@@ -68,9 +67,10 @@ const MyTodo = ({
                 title: data?.title || mandalartData?.title || DEFAULT_MANDALART_DATA.title,
               }}
               onCycleClick={handleCycleClick}
-              onTodoClick={handleMyTodoClick}
+              onTodoClick={() => {}}
               onMandalartClick={setSelectedParentId}
               selectedParentId={selectedParentId}
+              currentDate={currentDate}
             />
           </section>
         </div>
