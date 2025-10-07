@@ -1,4 +1,5 @@
 import { isAxiosError } from 'axios';
+import { useState } from 'react';
 
 import { ALERT, GOAL_COUNT } from '@/common/constants/todo';
 import { extractTitles, formatAiRecommendTitles } from '../utils/goal';
@@ -60,6 +61,7 @@ export const useLowerTodoAI = ({
 }: UseLowerTodoAIParams) => {
   const { openModal, closeModal } = useOverlayModal();
   const postAiRecommendNew = usePostAiRecommendNewSubGoal();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAiSubmit = async (goals: { title: string }[]) => {
     if (!selectedCoreGoalId) {
@@ -111,6 +113,10 @@ export const useLowerTodoAI = ({
       return;
     }
 
+    if (isAiUsed[selectedGoalIndex] || isLoading) {
+      return;
+    }
+
     const updateAiUsed = () => {
       setIsAiUsed((prev) => {
         const newState = [...prev];
@@ -119,6 +125,7 @@ export const useLowerTodoAI = ({
       });
     };
 
+    setIsLoading(true);
     setIsTooltipOpen(false);
 
     try {
@@ -138,6 +145,7 @@ export const useLowerTodoAI = ({
       const aiModalContent = (
         <AiRecommendModal
           onClose={closeModal}
+          onBeforeClose={updateAiUsed}
           onSubmit={handleAiSubmit}
           values={currentTodos.map((todo) => todo.title)}
           options={titles}
@@ -150,7 +158,7 @@ export const useLowerTodoAI = ({
       const failModalContent = <AiFailModal onClose={closeModal} message={message} />;
       openModal(failModalContent);
     } finally {
-      updateAiUsed();
+      setIsLoading(false);
     }
   };
 
