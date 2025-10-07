@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import type { CycleType } from '../constant/mock';
 
 import type { TodoItemTypes } from '@/page/todo/myTodo/component/TodoBox/TodoBox.types';
-import { formatDateDot } from '@/common/util/format';
+import { formatDateDot, toDateOnly } from '@/common/util/format';
 import { useGetRecommendation } from '@/api/domain/myTodo/hook/useGetRecommendation';
 import { usePostRecommendation } from '@/api/domain/myTodo/hook/usePostRecommendation';
 import { useDeleteRecommendation } from '@/api/domain/myTodo/hook/useDeleteRecommendation';
@@ -26,9 +26,6 @@ export const useMyTodo = ({ initialDate }: UseMyTodoProps = {}) => {
 
   const mandalartId = useMandalartId();
   const formattedDate = formatDateDot(currentDate);
-  const isoDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
-    .toISOString()
-    .split('T')[0];
   const { data: recommendationData, refetch } = useGetRecommendation(mandalartId, formattedDate);
   const { mutate: completeTodo } = usePostRecommendation();
   const { mutate: deleteTodo } = useDeleteRecommendation();
@@ -52,16 +49,12 @@ export const useMyTodo = ({ initialDate }: UseMyTodoProps = {}) => {
     mandalartId,
     selectedParentId,
     selectedCycle,
-    isoDate,
+    formattedDate,
   );
 
   const today = new Date();
-  const todayNoTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const currentNoTime = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    currentDate.getDate(),
-  );
+  const todayNoTime = toDateOnly(today);
+  const currentNoTime = toDateOnly(currentDate);
   const hasPreviousDate = Boolean(subGoalsMeta?.data?.isYesterdayExist);
   const hasNextDate = currentNoTime < todayNoTime;
 

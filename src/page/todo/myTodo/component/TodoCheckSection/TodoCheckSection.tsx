@@ -14,6 +14,7 @@ import { TodoBox } from '@/page/todo/myTodo/component/TodoBox';
 import type { CycleType } from '@/page/todo/myTodo/component/CycleChip';
 import type { TodoItemTypes } from '@/page/todo/myTodo/component/TodoBox/TodoBox.types';
 import Mandalart from '@/common/component/Mandalart/Mandalart';
+import { formatDateDot } from '@/common/util/format';
 
 interface TodoCheckSectionProps {
   selectedCycle: CycleType | undefined;
@@ -51,7 +52,7 @@ const TodoCheckSection = ({
     mandalartId,
     selectedParentId,
     selectedCycle,
-    currentDate ? currentDate.toISOString().split('T')[0] : undefined,
+    currentDate ? formatDateDot(currentDate) : undefined,
   );
 
   const [localSubGoals, setLocalSubGoals] = useState<TodoItemTypes[]>([]);
