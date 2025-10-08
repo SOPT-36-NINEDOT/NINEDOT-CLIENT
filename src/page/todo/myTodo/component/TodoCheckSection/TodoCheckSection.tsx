@@ -20,7 +20,6 @@ interface TodoCheckSectionProps {
   selectedCycle: CycleType | undefined;
   mandalartData: MandalartData;
   onCycleClick: (cycle: CycleType) => void;
-  onTodoClick: (item: TodoItemTypes) => void;
   onMandalartClick: (parentId: number | undefined) => void;
   selectedParentId: number | undefined;
   currentDate?: Date;
@@ -37,7 +36,6 @@ const TodoCheckSection = ({
   selectedCycle,
   mandalartData,
   onCycleClick,
-  onTodoClick,
   onMandalartClick,
   selectedParentId,
   currentDate,
@@ -87,7 +85,6 @@ const TodoCheckSection = ({
     const nextCompleted = !originalCompleted;
 
     updateLocalSubGoalCompletion(item.id, nextCompleted);
-    onTodoClick({ ...item, isCompleted: nextCompleted });
 
     if (originalCompleted) {
       uncheckSubGoalMutation.mutate(Number(item.id), {

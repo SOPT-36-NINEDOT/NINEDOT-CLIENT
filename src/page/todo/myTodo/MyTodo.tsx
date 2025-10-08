@@ -67,7 +67,6 @@ const MyTodo = ({
                 title: data?.title || mandalartData?.title || DEFAULT_MANDALART_DATA.title,
               }}
               onCycleClick={handleCycleClick}
-              onTodoClick={() => {}}
               onMandalartClick={setSelectedParentId}
               selectedParentId={selectedParentId}
               currentDate={currentDate}
