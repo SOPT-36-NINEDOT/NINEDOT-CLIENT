@@ -7,4 +7,5 @@ export type RecommendationSubGoal = {
 
 export type RecommendationResponse = {
   subGoals: RecommendationSubGoal[];
+  isYesterdayExist?: boolean;
 };

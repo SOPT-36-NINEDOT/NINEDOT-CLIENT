@@ -5,6 +5,10 @@ export function formatDateDot(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+export function toDateOnly(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
 export function createDate(year: number, month: number, day: number): Date {
   return new Date(year, month - 1, day);
 }

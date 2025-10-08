@@ -34,6 +34,7 @@ export interface SubGoal {
 
 export interface SubGoalsResponse {
   subGoals: SubGoal[];
+  isYesterdayExist?: boolean;
 }
 
 // 상위 목표 id, position 조회 API
@@ -61,6 +62,7 @@ export const getSubGoals = async (
   mandalartId: number,
   coreGoalId?: number,
   cycle?: CycleType,
+  date?: string,
 ): Promise<BaseResponse<SubGoalsResponse>> => {
   const queryParams = new URLSearchParams();
   if (coreGoalId !== undefined) {
@@ -68,6 +70,9 @@ export const getSubGoals = async (
   }
   if (cycle) {
     queryParams.append('cycle', cycle);
+  }
+  if (date) {
+    queryParams.append('date', date);
   }
 
   const queryString = queryParams.toString();
