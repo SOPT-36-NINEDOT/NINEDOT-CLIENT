@@ -14,14 +14,15 @@ import { TodoBox } from '@/page/todo/myTodo/component/TodoBox';
 import type { CycleType } from '@/page/todo/myTodo/component/CycleChip';
 import type { TodoItemTypes } from '@/page/todo/myTodo/component/TodoBox/TodoBox.types';
 import Mandalart from '@/common/component/Mandalart/Mandalart';
+import { formatDateDot } from '@/common/util/format';
 
 interface TodoCheckSectionProps {
   selectedCycle: CycleType | undefined;
   mandalartData: MandalartData;
   onCycleClick: (cycle: CycleType) => void;
-  onTodoClick: (item: TodoItemTypes) => void;
   onMandalartClick: (parentId: number | undefined) => void;
   selectedParentId: number | undefined;
+  currentDate?: Date;
 }
 
 const CYCLE_LIST: CycleType[] = ['DAILY', 'WEEKLY', 'ONCE'];
@@ -35,9 +36,9 @@ const TodoCheckSection = ({
   selectedCycle,
   mandalartData,
   onCycleClick,
-  onTodoClick,
   onMandalartClick,
   selectedParentId,
+  currentDate,
 }: TodoCheckSectionProps) => {
   const mandalartId = useMandalartId();
   const { data: coreGoalsData } = useGetMandalCoreGoals(mandalartId);
@@ -45,7 +46,12 @@ const TodoCheckSection = ({
     data: subGoalResponse,
     isLoading: isSubGoalsLoading,
     isFetching: isSubGoalsFetching,
-  } = useGetMandalartSubGoals(mandalartId, selectedParentId, selectedCycle);
+  } = useGetMandalartSubGoals(
+    mandalartId,
+    selectedParentId,
+    selectedCycle,
+    currentDate ? formatDateDot(currentDate) : undefined,
+  );
 
   const [localSubGoals, setLocalSubGoals] = useState<TodoItemTypes[]>([]);
 
@@ -79,7 +85,6 @@ const TodoCheckSection = ({
     const nextCompleted = !originalCompleted;
 
     updateLocalSubGoalCompletion(item.id, nextCompleted);
-    onTodoClick({ ...item, isCompleted: nextCompleted });
 
     if (originalCompleted) {
       uncheckSubGoalMutation.mutate(Number(item.id), {

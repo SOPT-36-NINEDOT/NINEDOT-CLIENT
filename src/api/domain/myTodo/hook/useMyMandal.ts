@@ -35,10 +35,11 @@ export const useGetMandalartSubGoals = (
   mandalartId: number,
   coreGoalId?: number,
   cycle?: string,
+  date?: string,
 ) => {
   return useQuery({
-    queryKey: QUERY_KEY.MANDALART_SUB_GOALS(mandalartId, coreGoalId, cycle),
-    queryFn: () => getSubGoals(mandalartId, coreGoalId, cycle as CycleType),
+    queryKey: [...QUERY_KEY.MANDALART_SUB_GOALS(mandalartId, coreGoalId, cycle), date],
+    queryFn: () => getSubGoals(mandalartId, coreGoalId, cycle as CycleType, date),
     enabled: !!mandalartId,
   });
 };
