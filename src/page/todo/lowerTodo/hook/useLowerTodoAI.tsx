@@ -1,4 +1,5 @@
 import { isAxiosError } from 'axios';
+import { useState } from 'react';
 
 import { ALERT, GOAL_COUNT } from '@/common/constants/todo';
 import { extractTitles, formatAiRecommendTitles } from '../utils/goal';
@@ -60,6 +61,7 @@ export const useLowerTodoAI = ({
 }: UseLowerTodoAIParams) => {
   const { openModal, closeModal } = useOverlayModal();
   const postAiRecommendNew = usePostAiRecommendNewSubGoal();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAiSubmit = async (goals: { title: string }[]) => {
     if (!selectedCoreGoalId) {
@@ -76,11 +78,13 @@ export const useLowerTodoAI = ({
     goals.forEach((goal, goalIndex) => {
       if (goalIndex < emptyIndices.length) {
         const targetIndex = emptyIndices[goalIndex];
-        const [cycleText, originalTitle] = goal.title.split('/');
+        const match = goal.title.match(/^(매일|매주|한 번)\/(.+)$/);
+        const titleText = match ? match[2] : goal.title;
+        const cycleText = match ? match[1] : '매일';
 
         const newTodo = {
-          title: originalTitle || goal.title,
-          cycle: convertCycleToEnglish(cycleText || '매일'),
+          title: titleText,
+          cycle: convertCycleToEnglish(cycleText),
         };
 
         updatedTodos[targetIndex] = newTodo;
@@ -111,6 +115,10 @@ export const useLowerTodoAI = ({
       return;
     }
 
+    if (isAiUsed[selectedGoalIndex] || isLoading) {
+      return;
+    }
+
     const updateAiUsed = () => {
       setIsAiUsed((prev) => {
         const newState = [...prev];
@@ -119,6 +127,7 @@ export const useLowerTodoAI = ({
       });
     };
 
+    setIsLoading(true);
     setIsTooltipOpen(false);
 
     try {
@@ -138,6 +147,7 @@ export const useLowerTodoAI = ({
       const aiModalContent = (
         <AiRecommendModal
           onClose={closeModal}
+          onBeforeClose={updateAiUsed}
           onSubmit={handleAiSubmit}
           values={currentTodos.map((todo) => todo.title)}
           options={titles}
@@ -150,7 +160,7 @@ export const useLowerTodoAI = ({
       const failModalContent = <AiFailModal onClose={closeModal} message={message} />;
       openModal(failModalContent);
     } finally {
-      updateAiUsed();
+      setIsLoading(false);
     }
   };
 
