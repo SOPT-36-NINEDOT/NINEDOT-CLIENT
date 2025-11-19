@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import getGoogleAuthCode from '@/api/auth/googleLogin/util/getGoogleAuthCode';
 import getAccessToken from '@/api/auth/googleLogin/util/getAccessToken';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface UserData {
   exists: boolean;
@@ -24,6 +25,7 @@ export const useGoogleAuth = (): UserData | null => {
         const data = await getAccessToken(code);
         if (data.accessToken) {
           localStorage.setItem('accessToken', data.accessToken);
+          useAuthStore.getState().updateLoginStatus();
         }
         setUserData(data);
       } catch (error) {

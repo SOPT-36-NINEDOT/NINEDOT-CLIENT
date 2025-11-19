@@ -28,27 +28,29 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response) {
-      const { status } = error.response;
+    if (
+      error.response &&
+      error.response.status === HTTP_STATUS.UNAUTHORIZED &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+      try {
+        const { accessToken } = await postRefreshToken();
+        localStorage.setItem('accessToken', accessToken);
 
-      if (status === HTTP_STATUS.UNAUTHORIZED) {
-        try {
-          const { accessToken } = await postRefreshToken();
-          localStorage.setItem('accessToken', accessToken);
+        axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
-          axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        } catch (refreshError) {
-          console.error('리프레시 토큰 만료, 재로그인 필요');
-          return Promise.reject(refreshError);
-        }
-      }
-
-      if (status === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
-        // 서버 오류 처리
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        console.error('리프레시 토큰 만료, 재로그인 필요');
+        return Promise.reject(refreshError);
       }
     }
-    return Promise.reject(error);
+
+    if (error.response?.status === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+      // 서버 오류 처리
+    }
   },
 );
 

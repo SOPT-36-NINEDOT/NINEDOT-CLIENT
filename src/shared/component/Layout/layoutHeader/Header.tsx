@@ -88,12 +88,14 @@ const Header = () => {
         })}
       </nav>
       <button onClick={handleProfile}>
-        <img
-          src={user.profileImageUrl}
-          alt="유저 프로필 이미지"
-          className={styles.profilePlaceholder}
-          onMouseDown={(e) => e.stopPropagation()}
-        />
+        {user.profileImageUrl ? (
+          <img
+            src={user.profileImageUrl}
+            alt="유저 프로필 이미지"
+            className={styles.profilePlaceholder}
+            onMouseDown={(e) => e.stopPropagation()}
+          />
+        ) : null}
       </button>
       {openProfile && <UserModal onClose={() => setOpenProfile(false)} />}
     </>
