@@ -50,6 +50,21 @@ const Header = () => {
 
     if (userData) {
       setUser(userData);
+
+      const { onboardingCompleted, nextPage } = userData;
+
+      if (!onboardingCompleted) {
+        navigate(PATH.SIGNUP, {
+          state: { userData },
+        });
+        return;
+      }
+
+      if (nextPage === 'ONBOARDING_COMPLETED') {
+        navigate(PATH.MANDAL);
+      } else {
+        navigate(PATH.INTRO, { state: { pageState: nextPage } });
+      }
     } else {
       resetUser();
     }

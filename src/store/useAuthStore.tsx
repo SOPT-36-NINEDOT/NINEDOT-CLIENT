@@ -7,6 +7,8 @@ const defaultUser: UserType = {
   name: '',
   email: '',
   profileImageUrl: '',
+  onboardingCompleted: false,
+  nextPage: '',
 };
 const getToken = () => localStorage.getItem('accessToken');
 
