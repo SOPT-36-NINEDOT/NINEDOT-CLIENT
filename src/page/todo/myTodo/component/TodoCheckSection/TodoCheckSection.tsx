@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import * as styles from '../../MyTodo.css';
 import type { MandalartData } from '../../constant/mock';
@@ -41,6 +42,7 @@ const TodoCheckSection = ({
   currentDate,
 }: TodoCheckSectionProps) => {
   const mandalartId = useMandalartId();
+  const queryClient = useQueryClient();
   const { data: coreGoalsData } = useGetMandalCoreGoals(mandalartId);
   const {
     data: subGoalResponse,
@@ -88,6 +90,11 @@ const TodoCheckSection = ({
 
     if (originalCompleted) {
       uncheckSubGoalMutation.mutate(Number(item.id), {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['mandalartSubGoals', mandalartId],
+          });
+        },
         onError: () => {
           updateLocalSubGoalCompletion(item.id, originalCompleted);
         },
@@ -99,6 +106,11 @@ const TodoCheckSection = ({
           date: today,
         },
         {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ['mandalartSubGoals', mandalartId],
+            });
+          },
           onError: () => {
             updateLocalSubGoalCompletion(item.id, originalCompleted);
           },

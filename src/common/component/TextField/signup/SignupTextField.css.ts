@@ -24,7 +24,20 @@ export const inputBase = style({
   textAlign: 'left',
 });
 
-export const inputFont = style([inputBase, fonts.body03]);
+export const inputFont = style([
+  inputBase,
+  fonts.body03,
+  {
+    selectors: {
+      '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
+        {
+          WebkitBoxShadow: `0 0 0px 1000px transparent inset`,
+          WebkitTextFillColor: colors.grey10,
+          transition: 'background-color 5000s ease-in-out 0s',
+        },
+    },
+  },
+]);
 
 const createInputStateVariants = () =>
   styleVariants({
