@@ -11,6 +11,8 @@ export interface UserType {
   job?: string;
   profileImageUrl: string;
   answers?: AnswerType[];
+  onboardingCompleted: boolean;
+  nextPage: string;
 }
 
 export interface AuthStoreType {
